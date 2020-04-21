@@ -1,0 +1,25 @@
+update-game-mode-for-admin: false
+default-world-config:
+  # Whether to keep spawn in memory
+  keep-spawn-in-memory: true
+  # Game mode
+  # Available: survival|creative|adventure|spectator
+  game-mode: survival
+  # Time of the world
+  # -1 means non specify
+  time: -1
+  # Game rules
+  game-rules: {}
+    # doWeatherCycle: false
+default-creation-config:
+  # Name of the ChunkGenerator.
+  # Vanilla default is 'natural'
+  generator-name: null
+  # Settings for generator
+  generator-settings: null
+  # Environment
+  # Available: nether|normal|the_end
+  environment: normal
+  # World type
+  # Available: amplified|buffet|customized|flat|large_biomes|normal|version_1_1
+  world-type: normal

@@ -1,0 +1,23 @@
+name: Worlds
+version: $version
+author: shirokuro
+# Suppress warnings that reported if using 1.13+ servers
+api-version: 1.13
+description: Simple world manager
+website: https://github.com/kuro46/Worlds
+main: xyz.shirokuro.worlds.Bootstrap
+load: POSTWORLD
+commands:
+  world:
+    description: Main command of Worlds
+    usage: "Error! Plugin maybe not loaded!"
+    permission: worlds.admin
+permissions:
+  worlds.*:
+    default: op
+    description: Root permission of Worlds
+    children:
+      worlds.admin: true
+  worlds.admin:
+    default: op
+    description: Worlds administration permission.
