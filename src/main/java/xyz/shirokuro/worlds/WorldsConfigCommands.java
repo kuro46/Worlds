@@ -29,7 +29,7 @@ public final class WorldsConfigCommands {
         this.worldConfigList = Objects.requireNonNull(worldConfigList, "worldConfigList");
     }
 
-    @Executor(command = "world config show [world]", description = "TODO")
+    @Executor(command = "world config show [world:worlds]", description = "TODO")
     public void executeConfigShow(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = Optional.ofNullable(data.get("world"))
@@ -66,11 +66,6 @@ public final class WorldsConfigCommands {
         worldConfig.getGameRules().forEach((key, value) -> {
             sender.sendMessage("    - " + key + ": " + value);
         });
-    }
-
-    @Completer(command = "world config show [world]")
-    public List<String> completeConfigShow(final CompletionData data) {
-        return  worlds(data);
     }
 
     private void saveWorldConfigList(final CommandSender sender) {
@@ -115,7 +110,7 @@ public final class WorldsConfigCommands {
             final Object result;
             switch (data.getName()) {
                 case "world":
-                    result = player.getWorld().getName();
+                    result = player.getLocation().getWorld().getName();
                     break;
                 case "x":
                     result = player.getLocation().getX();
@@ -137,13 +132,16 @@ public final class WorldsConfigCommands {
             }
             return Collections.singletonList(result.toString());
         } else if (data.getName().equals("world")) {
-            return worlds(data);
+            return Bukkit.getWorlds().stream()
+                .map(World::getName)
+                .filter(w -> w.startsWith(data.getCurrentValue()))
+                .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
     }
 
-    @Executor(command = "world config gamemode <world> <gamemode>", description = "TODO")
+    @Executor(command = "world config gamemode <world:worlds> <gamemode>", description = "TODO")
     public void executeConfigGameMode(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -172,22 +170,15 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    @Completer(command = "world config gamemode <world> <gamemode>")
+    @Completer(command = "world config gamemode <world:worlds> <gamemode>")
     public List<String> completeConfigGameMode(final CompletionData data) {
-        switch (data.getName()) {
-            case "world":
-                return worlds(data);
-            case "gamemode":
-                return Arrays.stream(GameMode.values())
-                    .map(GameMode::name)
-                    .filter(s -> s.startsWith(data.getCurrentValue()))
-                    .collect(Collectors.toList());
-            default:
-                throw new RuntimeException("unreachable");
-        }
+        return Arrays.stream(GameMode.values())
+            .map(GameMode::name)
+            .filter(s -> s.startsWith(data.getCurrentValue()))
+            .collect(Collectors.toList());
     }
 
-    @Executor(command = "world config gamerule <world> <gamerule> <value>", description = "TODO")
+    @Executor(command = "world config gamerule <world:worlds> <gamerule> <value>", description = "TODO")
     public void executeConfigGameRule(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -205,23 +196,7 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    private List<String> worlds(final CompletionData data) {
-        return Bukkit.getWorlds().stream()
-            .map(World::getName)
-            .filter(w -> w.startsWith(data.getCurrentValue()))
-            .collect(Collectors.toList());
-    }
-
-    @Completer(command = "world config gamerule <world> <gamerule> <value>")
-    public List<String> completeConfigGameRule(final CompletionData data) {
-        if (data.getName().equals("world")) {
-            return worlds(data);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Executor(command = "world config keepspawninmemory <world> <value>", description = "TODO")
+    @Executor(command = "world config keepspawninmemory <world:worlds> <value>", description = "TODO")
     public void executeConfigKeepSpawnInMemory(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -239,16 +214,7 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    @Completer(command = "world config keepspawninmemory <world> <value>")
-    public List<String> completeConfigKeepSpawnInMemory(final CompletionData data) {
-        if (data.getName().equals("world")) {
-            return worlds(data);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Executor(command = "world config time <world> <time>", description = "TODO")
+    @Executor(command = "world config time <world:worlds> <time>", description = "TODO")
     public void executeConfigTime(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -269,15 +235,6 @@ public final class WorldsConfigCommands {
             worldConfig.apply(world);
         }
         sender.sendMessage(ChatColor.GREEN + "Updated!");
-    }
-
-    @Completer(command = "world config time <world> <time>")
-    public List<String> completeConfigTime(final CompletionData data) {
-        if (data.getName().equals("world")) {
-            return worlds(data);
-        } else {
-            return Collections.emptyList();
-        }
     }
 }
 

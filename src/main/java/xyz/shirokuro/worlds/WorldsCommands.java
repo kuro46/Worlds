@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +19,9 @@ import xyz.shirokuro.commandutility.CompletionData;
 import xyz.shirokuro.commandutility.ExecutionData;
 import xyz.shirokuro.commandutility.annotation.Completer;
 import xyz.shirokuro.commandutility.annotation.Executor;
-import xyz.shirokuro.commandutility.CompletionData;
+import xyz.shirokuro.commandutility.BranchNode;
+import xyz.shirokuro.commandutility.CommandNode;
+import xyz.shirokuro.commandutility.Node;
 
 public final class WorldsCommands {
 
@@ -64,10 +67,10 @@ public final class WorldsCommands {
             });
     }
 
-    @Executor(command = "world import <worldName>", description = "")
+    @Executor(command = "world import <world>", description = "")
     public void executeImport(final ExecutionData data) {
         final CommandSender sender = data.getSender();
-        final String worldName = data.get("worldName");
+        final String worldName = data.get("world");
         if (worldConfigList.get(worldName).isPresent()) {
             sender.sendMessage(ChatColor.RED + "World: " +
                     ChatColor.GRAY + worldName + ChatColor.RED +
@@ -90,9 +93,9 @@ public final class WorldsCommands {
         saveWorldConfigList(sender);
     }
 
-    @Completer(command = "world import <worldName>")
+    @Completer(command = "world import <world>")
     public List<String> completeImport(final CompletionData data) {
-        if (data.getName().equals("worldName")) {
+        if (data.getName().equals("world")) {
             return Bukkit.getWorlds().stream()
                 .map(World::getName)
                 .filter(w -> !worldConfigList.get(w).isPresent())
@@ -136,10 +139,10 @@ public final class WorldsCommands {
         });
     }
 
-    @Executor(command = "world remove <worldName>", description = "TODO")
+    @Executor(command = "world remove <world>", description = "TODO")
     public void executeRemove(final ExecutionData data) {
         final CommandSender sender = data.getSender();
-        final String worldName = data.get("worldName");
+        final String worldName = data.get("world");
         if (!worldConfigList.get(worldName).isPresent()) {
             sender.sendMessage(ChatColor.RED + "World: " +
                     ChatColor.GRAY + worldName + ChatColor.RED +
@@ -151,9 +154,9 @@ public final class WorldsCommands {
         saveWorldConfigList(sender);
     }
 
-    @Completer(command = "world remove <worldName>")
+    @Completer(command = "world remove <world>")
     public List<String> completeRemove(final CompletionData data) {
-        if (data.getName().equals("worldName")) {
+        if (data.getName().equals("world")) {
             return worldConfigList.getMap().keySet().stream()
                 .filter(w -> w.startsWith(data.getCurrentValue()))
                 .collect(Collectors.toList());
@@ -162,10 +165,10 @@ public final class WorldsCommands {
         }
     }
 
-    @Executor(command = "world create <worldName>", description = "TODO")
+    @Executor(command = "world create <world>", description = "TODO")
     public void executeCreate(final ExecutionData data) {
         final CommandSender sender = data.getSender();
-        final String worldName = data.get("worldName");
+        final String worldName = data.get("world");
         if (worldConfigList.get(worldName).isPresent()) {
             sender.sendMessage(ChatColor.RED + "World: " + worldName + " is already exist in worlds.yml");
             return;
@@ -184,7 +187,7 @@ public final class WorldsCommands {
         sender.sendMessage(ChatColor.GREEN + "Created!");
     }
 
-    @Executor(command = "world tp <world>", description = "TODO")
+    @Executor(command = "world tp <world:worlds>", description = "TODO")
     public void executeTP(final ExecutionData data) {
         final Player player = data.getSenderAsPlayer();
         if (player == null) {
@@ -203,15 +206,36 @@ public final class WorldsCommands {
         player.teleport(dest);
     }
 
-    @Completer(command = "world tp <world>")
-    public List<String> completeTP(final CompletionData data) {
-        if (data.getName().equals("world")) {
-            return Bukkit.getWorlds().stream()
-                .map(World::getName)
-                .filter(w -> w.startsWith(data.getCurrentValue()))
-                .collect(Collectors.toList());
-        } else {
-            throw new RuntimeException("unreachable");
-        }
-    }
+//    @Executor(command = "world help", description = "TODO")
+//    public void executeHelp(final ExecutionData data) {
+//        Node node = data.getCommand();
+//        while (true) {
+//            final Node temp = node.getParent().orElse(null);
+//            if (temp == null) {
+//                break;
+//            } else {
+//                node = temp;
+//            }
+//        }
+//
+//        final BranchNode rootBranch = (BranchNode) node;
+//        final CommandSender sender = data.getSender();
+//        sender.sendMessage(ChatColor.BOLD + "Worlds: Help");
+//        for (final CommandNode commandNode : rootBranch.walkNodeTree()) {
+//            final StringJoiner sj = new StringJoiner(" ");
+//            sj.add(ChatColor.GRAY + commandNode.sections() + ChatColor.RESET);
+//            commandNode.getArgs().stream()
+//                .map(info -> {
+//                    if (info.isRequired()) {
+//                        return ChatColor.GOLD + "<" + info.getName() + ">" + ChatColor.RESET;
+//                    } else {
+//                        return ChatColor.YELLOW + "[" + info.getName() + "]" + ChatColor.RESET;
+//                    }
+//                })
+//                .forEach(sj::add);
+//            sj.add("-");
+//            sj.add(commandNode.getDescription());
+//            sender.sendMessage(sj.toString());
+//        }
+//    }
 }
