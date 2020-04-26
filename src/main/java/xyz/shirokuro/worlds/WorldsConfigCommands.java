@@ -29,7 +29,10 @@ public final class WorldsConfigCommands {
         this.worldConfigList = Objects.requireNonNull(worldConfigList, "worldConfigList");
     }
 
-    @Executor(command = "world config show [world:worlds]", description = "TODO")
+    @Executor(
+        command = "world config show [world:worlds]",
+        description = "Show current/specified world's configuration"
+    )
     public void executeConfigShow(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = Optional.ofNullable(data.get("world"))
@@ -79,7 +82,10 @@ public final class WorldsConfigCommands {
             });
     }
 
-    @Executor(command = "world config spawn <world> <x> <y> <z> <yaw> <pitch>", description = "TODO")
+    @Executor(
+        command = "world config spawn <world> <x> <y> <z> <yaw> <pitch>",
+        description = "Set spawn location of specified world"
+    )
     public void executeConfigSpawn(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -141,7 +147,10 @@ public final class WorldsConfigCommands {
         }
     }
 
-    @Executor(command = "world config gamemode <world:worlds> <gamemode>", description = "TODO")
+    @Executor(
+        command = "world config gamemode <world:worlds> <gamemode>",
+        description = "Set gamemode of specified world"
+    )
     public void executeConfigGameMode(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -178,7 +187,10 @@ public final class WorldsConfigCommands {
             .collect(Collectors.toList());
     }
 
-    @Executor(command = "world config gamerule <world:worlds> <gamerule> <value>", description = "TODO")
+    @Executor(
+        command = "world config gamerule <world:worlds> <gamerule> <value>",
+        description = "Set gamerule of specified world"
+    )
     public void executeConfigGameRule(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -196,7 +208,10 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    @Executor(command = "world config keepspawninmemory <world:worlds> <value>", description = "TODO")
+    @Executor(
+        command = "world config keepspawninmemory <world:worlds> <value>",
+        description = "Set wether to keep spawn in memory"
+    )
     public void executeConfigKeepSpawnInMemory(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -214,7 +229,10 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    @Executor(command = "world config time <world:worlds> <time>", description = "TODO")
+    @Executor(
+        command = "world config time <world:worlds> <time>",
+        description = "Set time of specified world"
+    )
     public void executeConfigTime(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");

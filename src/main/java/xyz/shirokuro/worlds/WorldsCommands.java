@@ -35,7 +35,7 @@ public final class WorldsCommands {
         this.worldConfigList = Objects.requireNonNull(worldConfigList, "worldConfigList");
     }
 
-    @Executor(command = "world list", description = "TODO")
+    @Executor(command = "world list", description = "List all worlds")
     public void executeList(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         sender.sendMessage(ChatColor.BOLD + "Worlds:");
@@ -67,7 +67,7 @@ public final class WorldsCommands {
             });
     }
 
-    @Executor(command = "world import <world>", description = "")
+    @Executor(command = "world import <world>", description = "Import specified world")
     public void executeImport(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -106,7 +106,7 @@ public final class WorldsCommands {
         }
     }
 
-    @Executor(command = "world reload", description = "TODO")
+    @Executor(command = "world reload", description = "Reload configuiration")
     public void executeReload(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         CompletableFuture.runAsync(() -> {
@@ -139,7 +139,7 @@ public final class WorldsCommands {
         });
     }
 
-    @Executor(command = "world remove <world>", description = "TODO")
+    @Executor(command = "world remove <world>", description = "Remove specified world")
     public void executeRemove(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -165,7 +165,7 @@ public final class WorldsCommands {
         }
     }
 
-    @Executor(command = "world create <world>", description = "TODO")
+    @Executor(command = "world create <world>", description = "Create world by specified name")
     public void executeCreate(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
@@ -187,7 +187,7 @@ public final class WorldsCommands {
         sender.sendMessage(ChatColor.GREEN + "Created!");
     }
 
-    @Executor(command = "world tp <world:worlds>", description = "TODO")
+    @Executor(command = "world tp <world:worlds>", description = "Teleport to world")
     public void executeTP(final ExecutionData data) {
         final Player player = data.getSenderAsPlayer();
         if (player == null) {
@@ -205,37 +205,4 @@ public final class WorldsCommands {
             .orElse(world.getSpawnLocation());
         player.teleport(dest);
     }
-
-//    @Executor(command = "world help", description = "TODO")
-//    public void executeHelp(final ExecutionData data) {
-//        Node node = data.getCommand();
-//        while (true) {
-//            final Node temp = node.getParent().orElse(null);
-//            if (temp == null) {
-//                break;
-//            } else {
-//                node = temp;
-//            }
-//        }
-//
-//        final BranchNode rootBranch = (BranchNode) node;
-//        final CommandSender sender = data.getSender();
-//        sender.sendMessage(ChatColor.BOLD + "Worlds: Help");
-//        for (final CommandNode commandNode : rootBranch.walkNodeTree()) {
-//            final StringJoiner sj = new StringJoiner(" ");
-//            sj.add(ChatColor.GRAY + commandNode.sections() + ChatColor.RESET);
-//            commandNode.getArgs().stream()
-//                .map(info -> {
-//                    if (info.isRequired()) {
-//                        return ChatColor.GOLD + "<" + info.getName() + ">" + ChatColor.RESET;
-//                    } else {
-//                        return ChatColor.YELLOW + "[" + info.getName() + "]" + ChatColor.RESET;
-//                    }
-//                })
-//                .forEach(sj::add);
-//            sj.add("-");
-//            sj.add(commandNode.getDescription());
-//            sender.sendMessage(sj.toString());
-//        }
-//    }
 }
