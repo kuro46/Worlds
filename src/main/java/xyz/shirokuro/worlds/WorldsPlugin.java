@@ -26,32 +26,16 @@ public final class WorldsPlugin implements Listener {
     private final Config config;
 
     public WorldsPlugin(final Plugin plugin) throws PluginInitException {
+        Logger.init(plugin.getLogger());
         plugin.saveDefaultConfig();
         final Path dataFolder = plugin.getDataFolder().toPath();
-        try {
-            this.worldConfigList = new WorldConfigList(dataFolder.resolve("worlds.yml"));
-        } catch (IOException | ConfigException e) {
-            throw new PluginInitException("Failed to load world list", e);
-        }
-        try {
-            this.config = new Config(dataFolder.resolve("config.yml"));
-        } catch (IOException | ConfigException e) {
-            throw new PluginInitException("Failed to load configuration", e);
-        }
+        this.config = loadConfig(dataFolder);
+        this.worldConfigList = loadWorldConfigList(dataFolder);
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        new CommandGroup(ChatColor.RED.toString())
-            .generateHelp(ChatColor.BOLD + "Worlds: Help")
-            .addAll(new WorldsCommands(plugin, config, worldConfigList))
-            .addAll(new WorldsConfigCommands(config, worldConfigList));
-        final Path worldContainer = Bukkit.getWorldContainer().toPath();
-        worldConfigList.getMap().forEach((worldName, worldConfig) -> {
-            if (Files.notExists(worldContainer.resolve(worldName))) {
-                plugin.getLogger().warning("World: " + worldName + " is registered in worlds.yml but not exist!");
-                return;
-            }
-            final World world = WorldCreator.name(worldName).createWorld();
-            worldConfig.apply(world);
-        });
+        registerCommands(plugin);
+        Logger.info("Loading worlds...");
+        loadWorlds();
+        Logger.info("Enabled!");
     }
 
     public static WorldsPlugin getInstance() {
@@ -63,6 +47,41 @@ public final class WorldsPlugin implements Listener {
             throw new PluginInitException("Plugin already initialized!");
         }
         instance = new WorldsPlugin(plugin);
+    }
+
+    private WorldConfigList loadWorldConfigList(final Path dataFolder) throws PluginInitException {
+        try {
+            return new WorldConfigList(dataFolder.resolve("worlds.yml"));
+        } catch (IOException | ConfigException e) {
+            throw new PluginInitException("Failed to load world list", e);
+        }
+    }
+
+    private Config loadConfig(final Path dataFolder) throws PluginInitException {
+        try {
+            return new Config(dataFolder.resolve("config.yml"));
+        } catch (IOException | ConfigException e) {
+            throw new PluginInitException("Failed to load configuration", e);
+        }
+    }
+
+    private void registerCommands(final Plugin plugin) {
+        new CommandGroup(ChatColor.RED.toString())
+            .generateHelp(ChatColor.BOLD + "Worlds: Help")
+            .addAll(new WorldsCommands(plugin, config, worldConfigList))
+            .addAll(new WorldsConfigCommands(config, worldConfigList));
+    }
+
+    private void loadWorlds() {
+        final Path worldContainer = Bukkit.getWorldContainer().toPath();
+        worldConfigList.getMap().forEach((worldName, worldConfig) -> {
+            if (Files.notExists(worldContainer.resolve(worldName))) {
+                Logger.warn("World: " + worldName + " is registered in worlds.yml but not exist!");
+                return;
+            }
+            final World world = WorldCreator.name(worldName).createWorld();
+            worldConfig.apply(world);
+        });
     }
 
     public WorldConfigList getWorldConfigList() {
