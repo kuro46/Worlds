@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -73,6 +74,11 @@ public final class WorldsPlugin implements Listener {
 
     private void registerCommands(final Plugin plugin) {
         new CommandGroup(ChatColor.RED.toString())
+            .addCompleter("managedworlds", data -> {
+                return worldConfigList.getMap().keySet().stream()
+                    .filter(s -> s.startsWith(data.getCurrentValue()))
+                    .collect(Collectors.toList());
+            })
             .generateHelp(ChatColor.BOLD + "Worlds: Help")
             .addAll(new WorldsCommands(plugin, config, worldConfigList))
             .addAll(new WorldsConfigCommands(config, worldConfigList));

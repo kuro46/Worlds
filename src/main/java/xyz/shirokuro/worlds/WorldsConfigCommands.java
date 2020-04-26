@@ -30,7 +30,7 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config show [world:worlds]",
+        command = "world config show [world:managedworlds]",
         description = "Show current/specified world's configuration"
     )
     public void executeConfigShow(final ExecutionData data) {
@@ -69,6 +69,13 @@ public final class WorldsConfigCommands {
         worldConfig.getGameRules().forEach((key, value) -> {
             sender.sendMessage("    - " + key + ": " + value);
         });
+    }
+
+    @Completer(command = "world config show [world]")
+    public List<String> completeConfigShow(final CompletionData data) {
+        return worldConfigList.getMap().keySet().stream()
+            .filter(s -> s.startsWith(data.getCurrentValue()))
+            .collect(Collectors.toList());
     }
 
     private void saveWorldConfigList(final CommandSender sender) {
