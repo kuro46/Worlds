@@ -45,7 +45,7 @@ public final class WorldsCommands {
             return;
         }
         final World world = player.getWorld();
-        final Location dest = Optional.ofNullable(worldConfigList.get(world))
+        final Location dest = worldConfigList.get(world)
             .flatMap(WorldConfig::getSpawn)
             .map(coord -> coord.withWorld(world))
             .orElse(world.getSpawnLocation());
