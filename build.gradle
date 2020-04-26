@@ -20,16 +20,8 @@ dependencies {
     implementation 'xyz.shirokuro:commandutility:0.7.0'
     // Bukkit
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
-    // Gson
-    implementation 'com.google.code.gson:gson:2.8.6'
     // Guava
     implementation 'com.google.guava:guava:29.0-jre'
-    // Apache Commons Lang
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    // Apache Commons Text
-    implementation 'org.apache.commons:commons-text:1.8'
-    // Fuzzy Wuzzy
-    implementation 'me.xdrop:fuzzywuzzy:1.2.0'
     // Bukkit for test
     testImplementation 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
     // JUnit
@@ -64,9 +56,6 @@ shadowJar {
     archiveFileName = "Worlds.jar"
 
     relocate 'com.google', 'xyz.shirokuro.worlds.libs.google'
-    relocate 'me.xdrop', 'xyz.shirokuro.worlds.libs.me.xdrop'
-    relocate 'org.apache.commons.lang3', 'xyz.shirokuro.worlds.libs.commons.lang'
-    relocate 'org.apache.commons.text', 'xyz.shirokuro.worlds.libs.commons.text'
     relocate 'org.checkerframework', 'xyz.shirokuro.worlds.libs.checkerframework'
     relocate 'xyz.shirokuro.commandutility', 'xyz.shirokuro.worlds.libs.commandutility'
 }
