@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import java.nio.file.Files;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -173,6 +174,11 @@ public final class WorldsCommands {
         }
         if (Bukkit.getWorld(worldName) != null) {
             sender.sendMessage(ChatColor.RED + "World: " + worldName + " is already exist");
+            return;
+        }
+        if (Files.exists(Bukkit.getWorldContainer().toPath().resolve(worldName))) {
+            sender.sendMessage(ChatColor.RED + "World: " + worldName + " is already exist! (but not loaded now!)");
+            sender.sendMessage(ChatColor.RED + "You can import by executing `/world import`");
             return;
         }
         sender.sendMessage(ChatColor.GRAY + "Creating...");
