@@ -40,6 +40,7 @@ public final class WorldsPlugin implements Listener {
         }
         Bukkit.getPluginManager().registerEvents(this, plugin);
         new CommandGroup(ChatColor.RED.toString())
+            .generateHelp(ChatColor.BOLD + "Worlds: Help")
             .addAll(new WorldsCommands(plugin, config, worldConfigList))
             .addAll(new WorldsConfigCommands(config, worldConfigList));
         final Path worldContainer = Bukkit.getWorldContainer().toPath();
