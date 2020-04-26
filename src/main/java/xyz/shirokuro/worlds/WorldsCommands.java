@@ -37,6 +37,21 @@ public final class WorldsCommands {
         this.worldConfigList = Objects.requireNonNull(worldConfigList, "worldConfigList");
     }
 
+    @Executor(command = "world spawn", description = "Teleport to current world's spawn")
+    public void executeSpawn(final ExecutionData data) {
+        final Player player = data.getSenderAsPlayer();
+        if (player == null) {
+            data.getSender().sendMessage(ChatColor.RED + "Cannot perform command from the console");
+            return;
+        }
+        final World world = player.getWorld();
+        final Location dest = Optional.ofNullable(worldConfigList.get(world))
+            .flatMap(WorldConfig::getSpawn)
+            .map(coord -> coord.withWorld(world))
+            .orElse(world.getSpawnLocation());
+        player.teleport(dest);
+    }
+
     @Executor(command = "world list", description = "List all worlds")
     public void executeList(final ExecutionData data) {
         final CommandSender sender = data.getSender();
