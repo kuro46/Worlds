@@ -4,7 +4,7 @@ A simple world manager for Bukkit 1.12.x ~ 1.15.x
 
 ## Getting started
 
-All of commands registered by Worlds are starts with `/world`.
+All of commands registered by Worlds are starts with `/world`.  
 `/world help` shows help message for all commands.
 
 ## For multiverse-core users
@@ -32,9 +32,9 @@ It is recommended to add aliases like below.
 
 ```yml
 aliases:
-  mvtp
+  mvtp:
   - "world tp $$1"
-  mvs
+  mvs:
   - "world spawn"
 ```
 
