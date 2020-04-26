@@ -34,6 +34,8 @@ It is recommended to add aliases like below.
 aliases:
   mvtp
   - "world tp $$1"
+  mvs
+  - "world spawn"
 ```
 
 ## For developer
@@ -54,7 +56,7 @@ And then, add to dependency.
 <dependency>
     <groupId>xyz.shirokuro</groupId>
     <artifactId>worlds</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -67,7 +69,7 @@ maven { url 'https://maven.shirokuro.xyz/repos/releases/' }
 ```
 And then, add to dependency.
 ```groovy
-compileOnly 'xyz.shirokuro:commandutility:0.7.0'
+compileOnly 'xyz.shirokuro:worlds:0.2.0'
 ```
 
 ### Examples
