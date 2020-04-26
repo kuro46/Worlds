@@ -149,7 +149,7 @@ public final class WorldConfig {
             world.setTime(time);
         }
         gameRules.forEach((key, value) -> {
-            if (world.isGameRule(key)) {
+            if (!world.isGameRule(key)) {
                 throw new IllegalArgumentException("Gamerule: " + key + " is invalid gamerule!");
             }
             world.setGameRuleValue(key, value);
