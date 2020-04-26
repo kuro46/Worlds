@@ -198,12 +198,18 @@ public final class WorldsConfigCommands {
             sender.sendMessage(ChatColor.RED + "World: " + worldName + " not found");
             return;
         }
-        worldConfig.putGameRule(data.get("gamerule"), data.get("value"));
-        saveWorldConfigList(sender);
         final World world = Bukkit.getWorld(worldName);
-        if (world != null) {
-            worldConfig.apply(world);
+        if (world == null) {
+            sender.sendMessage(ChatColor.RED + "Please make sure " + worldName + " is loaded!");
+            return;
         }
+        if (!world.isGameRule(data.get("gamerule"))) {
+            sender.sendMessage(ChatColor.RED + data.get("gamerule") + " is invalid gamerule!");
+            return;
+        }
+        worldConfig.getGameRules().put(data.get("gamerule"), data.get("value"));
+        worldConfig.apply(world);
+        saveWorldConfigList(sender);
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 

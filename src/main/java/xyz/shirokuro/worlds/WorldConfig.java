@@ -96,14 +96,10 @@ public final class WorldConfig {
     /**
      * Returns gamerules.
      *
-     * @return Map (Immutable)
+     * @return Map (Mutable)
      */
     public Map<String, String> getGameRules() {
-        return Collections.unmodifiableMap(gameRules);
-    }
-
-    public void putGameRule(final String key, final String value) {
-        gameRules.put(key.toLowerCase(Locale.ENGLISH), value);
+        return gameRules;
     }
 
     /**
@@ -151,6 +147,11 @@ public final class WorldConfig {
         if (time != -1) {
             world.setTime(time);
         }
-        gameRules.forEach(world::setGameRuleValue);
+        gameRules.forEach((key, value) -> {
+            if (world.isGameRule(key)) {
+                throw new IllegalArgumentException("Gamerule: " + key + " is invalid gamerule!");
+            }
+            world.setGameRuleValue(key, value);
+        });
     }
 }
