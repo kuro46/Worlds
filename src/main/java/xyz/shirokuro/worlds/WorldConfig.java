@@ -1,5 +1,6 @@
 package xyz.shirokuro.worlds;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -95,10 +96,14 @@ public final class WorldConfig {
     /**
      * Returns gamerules.
      *
-     * @return Map (Mutable)
+     * @return Map (Immutable)
      */
     public Map<String, String> getGameRules() {
-        return gameRules;
+        return Collections.unmodifiableMap(gameRules);
+    }
+
+    public void putGameRule(final String key, final String value) {
+        gameRules.put(key.toLowerCase(Locale.ENGLISH), value);
     }
 
     public Coord getSpawn() {
