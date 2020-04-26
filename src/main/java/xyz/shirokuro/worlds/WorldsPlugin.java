@@ -38,6 +38,12 @@ public final class WorldsPlugin implements Listener {
         Logger.info("Enabled!");
     }
 
+    /**
+     * Returns a instance of {@code WorldsPlugin}.
+     * If plugin isn't loaded, It will return {@code null}
+     *
+     * @return instance of {@code WorldsPlugin} or {@code null}
+     */
     public static WorldsPlugin getInstance() {
         return instance;
     }
@@ -84,6 +90,12 @@ public final class WorldsPlugin implements Listener {
         });
     }
 
+    /**
+     * Returns a instance of WorldConfigList.
+     * If this plugin isn't loaded, it will returns null.
+     *
+     * @return instance of {@code WorldConfigList} or null
+     */
     public WorldConfigList getWorldConfigList() {
         return worldConfigList;
     }

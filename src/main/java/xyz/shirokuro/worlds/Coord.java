@@ -50,6 +50,11 @@ public final class Coord {
         section.set("yaw", yaw);
     }
 
+    /**
+     * Creates {@code Location} with specified world
+     *
+     * @return {@code Location}
+     */
     public Location withWorld(final World world) {
         return new Location(world, x, y, z, yaw, pitch);
     }

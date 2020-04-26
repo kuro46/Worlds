@@ -56,10 +56,24 @@ public final class WorldConfigList {
         });
     }
 
+    /**
+     * Returns {@code WorldConfig} by specified world name.
+     * If specified world is not managed by Worlds, it will returns empty {@code Optional}.
+     *
+     * @param worldName name of the world
+     * @return maybe empty
+     */
     public Optional<WorldConfig> get(final String worldName) {
         return Optional.ofNullable(map.get(worldName));
     }
 
+    /**
+     * Returns {@code WorldConfig} by specified world.
+     * If specified world is not managed by Worlds, it will returns empty {@code Optional}.
+     *
+     * @param world instance of {@code World}
+     * @return maybe empty
+     */
     public Optional<WorldConfig> get(final World world) {
         return get(world.getName());
     }

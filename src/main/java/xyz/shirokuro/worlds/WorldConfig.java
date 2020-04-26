@@ -106,6 +106,12 @@ public final class WorldConfig {
         gameRules.put(key.toLowerCase(Locale.ENGLISH), value);
     }
 
+    /**
+     * Returns spawn coordinate of this config.
+     * If spawn is not specified, it will returns null.
+     *
+     * @return {@code Coord} or null
+     */
     public Coord getSpawn() {
         return spawnCoord;
     }
