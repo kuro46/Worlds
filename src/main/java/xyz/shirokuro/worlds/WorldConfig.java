@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import lombok.NonNull;
@@ -104,12 +105,12 @@ public final class WorldConfig {
 
     /**
      * Returns spawn coordinate of this config.
-     * If spawn is not specified, it will returns null.
+     * If spawn is not specified, it will returns empty Optional.
      *
-     * @return {@code Coord} or null
+     * @return {@code Coord} or empty
      */
-    public Coord getSpawn() {
-        return spawnCoord;
+    public Optional<Coord> getSpawn() {
+        return Optional.ofNullable(spawnCoord);
     }
 
     public void setSpawn(final Coord spawn) {

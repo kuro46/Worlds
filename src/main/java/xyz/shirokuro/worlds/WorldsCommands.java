@@ -216,7 +216,7 @@ public final class WorldsCommands {
             return;
         }
         final Location dest = worldConfigList.get(world)
-            .map(worldConfig -> worldConfig.getSpawn())
+            .flatMap(worldConfig -> worldConfig.getSpawn())
             .map(coord -> coord.withWorld(world))
             .orElse(world.getSpawnLocation());
         player.teleport(dest);

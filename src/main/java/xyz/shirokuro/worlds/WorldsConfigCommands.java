@@ -55,7 +55,7 @@ public final class WorldsConfigCommands {
         sender.sendMessage("  - game-mode: " + worldConfig.getGameMode().name());
         sender.sendMessage("  - time: " + worldConfig.getTime());
         sender.sendMessage("  - spawn:");
-        final Coord spawn = worldConfig.getSpawn();
+        final Coord spawn = worldConfig.getSpawn().orElse(null);
         if (spawn == null) {
             sender.sendMessage("    Not Specified");
         } else {
