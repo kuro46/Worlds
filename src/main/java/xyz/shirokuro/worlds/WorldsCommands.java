@@ -149,7 +149,12 @@ public final class WorldsCommands {
             return;
         }
         worldConfigList.remove(worldName);
+        if (Bukkit.getWorld(worldName) != null) {
+            Bukkit.unloadWorld(worldName, true);
+        }
         sender.sendMessage(ChatColor.GREEN + "Removed!");
+        sender.sendMessage(ChatColor.GRAY + "Note: Worlds will not delete world data. " +
+                "If you want to delete it, Please tell to server owner.");
         saveWorldConfigList(sender);
     }
 
