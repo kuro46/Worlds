@@ -71,13 +71,6 @@ public final class WorldsConfigCommands {
         });
     }
 
-    @Completer(command = "world config show [world]")
-    public List<String> completeConfigShow(final CompletionData data) {
-        return worldConfigList.getMap().keySet().stream()
-            .filter(s -> s.startsWith(data.getCurrentValue()))
-            .collect(Collectors.toList());
-    }
-
     private void saveWorldConfigList(final CommandSender sender) {
         worldConfigList.save()
             .exceptionally(t -> {
@@ -142,7 +135,10 @@ public final class WorldsConfigCommands {
                 default:
                     throw new RuntimeException("unreachable");
             }
-            return Collections.singletonList(result.toString());
+            final String resultStr = result.toString();
+            return resultStr.startsWith(data.getCurrentValue())
+                ? Collections.singletonList(resultStr)
+                : Collections.emptyList();
         } else if (data.getName().equals("world")) {
             return Bukkit.getWorlds().stream()
                 .map(World::getName)
@@ -154,7 +150,7 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config gamemode <world:worlds> <gamemode>",
+        command = "world config gamemode <world:managedworlds> <gamemode>",
         description = "Set gamemode of specified world"
     )
     public void executeConfigGameMode(final ExecutionData data) {
@@ -183,7 +179,7 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
-    @Completer(command = "world config gamemode <world:worlds> <gamemode>")
+    @Completer(command = "world config gamemode <world:managedworlds> <gamemode>")
     public List<String> completeConfigGameMode(final CompletionData data) {
         return Arrays.stream(GameMode.values())
             .map(GameMode::name)
@@ -219,7 +215,7 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config keepspawninmemory <world:worlds> <value>",
+        command = "world config keepspawninmemory <world:managedworlds> <value>",
         description = "Set wether to keep spawn in memory"
     )
     public void executeConfigKeepSpawnInMemory(final ExecutionData data) {
@@ -240,7 +236,7 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config time <world:worlds> <time>",
+        command = "world config time <world:managedworlds> <time>",
         description = "Set time of specified world"
     )
     public void executeConfigTime(final ExecutionData data) {
