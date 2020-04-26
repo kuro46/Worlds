@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -77,11 +78,17 @@ public final class WorldsCommands {
                     " is already imported");
             return;
         }
-        final World world = Bukkit.getWorld(worldName);
+        final World world = Optional.ofNullable(Bukkit.getWorld(worldName))
+            .orElseGet(() -> {
+                return Files.exists(Bukkit.getWorldContainer().toPath().resolve(worldName))
+                    ? WorldCreator.name(worldName).createWorld()
+                    : null;
+            });
         if (world == null) {
             sender.sendMessage(ChatColor.RED + "World: " +
                     ChatColor.GRAY + worldName + ChatColor.RED +
                     " not found");
+            return;
         }
         final WorldConfig worldConfig = WorldConfig.copy(config.getDefaultWorldConfig());
         worldConfig.apply(world);
