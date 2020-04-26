@@ -169,11 +169,9 @@ public final class WorldsConfigCommands {
         saveWorldConfigList(sender);
         final World world = Bukkit.getWorld(worldName);
         if (world != null) {
-            Bukkit.getOnlinePlayers().stream()
-                .filter(p -> p.getWorld().equals(world))
-                .forEach(p -> {
-                    worldConfig.updateGameModeIfNeeded(config, p);
-                });
+            world.getPlayers().forEach(p -> {
+                worldConfig.updateGameModeIfNeeded(config, p);
+            });
         }
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }

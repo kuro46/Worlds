@@ -107,9 +107,7 @@ public final class WorldsCommands {
         }
         final WorldConfig worldConfig = WorldConfig.copy(config.getDefaultWorldConfig());
         worldConfig.apply(world);
-        Bukkit.getOnlinePlayers().stream()
-            .filter(p -> p.getWorld().equals(world))
-            .forEach(p -> worldConfig.updateGameModeIfNeeded(config, p));
+        world.getPlayers().forEach(p -> worldConfig.updateGameModeIfNeeded(config, p));
         worldConfigList.add(worldName, worldConfig);
         sender.sendMessage(ChatColor.GREEN + "Imported!");
         saveWorldConfigList(sender);
