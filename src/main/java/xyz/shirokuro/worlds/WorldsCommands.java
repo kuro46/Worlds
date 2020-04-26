@@ -61,8 +61,7 @@ public final class WorldsCommands {
             .exceptionally(t -> {
                 sender.sendMessage(ChatColor.RED + "Failed to save configuration! Error: " +
                         t.getMessage());
-                System.err.println("An exception occurred while saving world configuration");
-                t.printStackTrace();
+                Logger.error("An exception occurred while saving world configuration", t);
                 return null;
             });
     }
@@ -133,8 +132,7 @@ public final class WorldsCommands {
         }).exceptionally(t -> {
             sender.sendMessage(ChatColor.RED +
                     "Failed to reload configuration! Error: " + t.getMessage());
-            System.err.println("An exception occurred while reloading configuration");
-            t.printStackTrace();
+            Logger.error("An exception occurred while reloading configuration", t);
             return null;
         });
     }

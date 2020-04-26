@@ -76,8 +76,7 @@ public final class WorldsConfigCommands {
             .exceptionally(t -> {
                 sender.sendMessage(ChatColor.RED + "Failed to save configuration! Error: " +
                         t.getMessage());
-                System.err.println("An exception occurred while saving world configuration");
-                t.printStackTrace();
+                Logger.error("An exception occurred while saving world configuration", t);
                 return null;
             });
     }
