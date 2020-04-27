@@ -212,6 +212,22 @@ public final class WorldsConfigCommands {
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
+    @Completer(command = "world config gamerule <world:worlds> <gamerule> <value>")
+    public List<String> completeConfigGameRule(final CompletionData data) {
+        if (data.getName().equals("gamerule")) {
+            final List<World> worlds = Bukkit.getWorlds();
+            if (!worlds.isEmpty()) {
+                return Arrays.stream(worlds.get(0).getGameRules())
+                    .filter(s -> s.startsWith(data.getCurrentValue()))
+                    .collect(Collectors.toList());
+            } else {
+                return Collections.emptyList();
+            }
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Executor(
         command = "world config keepspawninmemory <world:managedworlds> <value>",
         description = "Set wether to keep spawn in memory"
