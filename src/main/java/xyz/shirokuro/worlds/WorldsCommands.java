@@ -105,7 +105,7 @@ public final class WorldsCommands {
                     " not found");
             return;
         }
-        final WorldConfig worldConfig = WorldConfig.copy(config.getDefaultWorldConfig());
+        final WorldConfig worldConfig = WorldConfig.fromDefault(config.getDefaultWorldConfig());
         worldConfig.apply(world);
         world.getPlayers().forEach(p -> worldConfig.updateGameModeIfNeeded(config, p));
         worldConfigList.add(worldName, worldConfig);
@@ -210,8 +210,8 @@ public final class WorldsCommands {
         final WorldCreator creator = WorldCreator.name(worldName);
         config.getDefaultWorldCreationConfig().configureWorldCreator(creator);
         final World world = creator.createWorld();
-        final WorldConfig worldConfig = WorldConfig.copy(config.getDefaultWorldConfig());
-        worldConfigList.add(world, worldConfig);
+        config.getDefaultWorldConfig().apply(world);
+        worldConfigList.add(world, WorldConfig.fromDefault(config.getDefaultWorldConfig()));
         saveWorldConfigList(sender);
         sender.sendMessage(ChatColor.GREEN + "Created!");
     }

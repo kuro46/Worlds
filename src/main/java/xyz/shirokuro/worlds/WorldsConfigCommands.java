@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -30,7 +31,7 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config show [world:managedworlds]",
+        command = "world config show [world:worlds]",
         description = "Show current/specified world's configuration"
     )
     public void executeConfigShow(final ExecutionData data) {
@@ -45,30 +46,33 @@ public final class WorldsConfigCommands {
             sender.sendMessage(ChatColor.RED + "Please specify world or perform from the game");
             return;
         }
-        final WorldConfig worldConfig = worldConfigList.get(worldName).orElse(null);
-        if (worldConfig == null) {
-            sender.sendMessage(ChatColor.RED + "World: " + worldName + " not found");
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            sender.sendMessage(ChatColor.RED + "Please make sure '" + worldName + "' is loaded!");
             return;
         }
         sender.sendMessage(ChatColor.BOLD + "Settings of " + worldName);
-        sender.sendMessage("  - keep-spawn-in-memory: " + worldConfig.keepSpawnInMemory());
-        sender.sendMessage("  - game-mode: " + worldConfig.getGameMode().name());
-        sender.sendMessage("  - time: " + worldConfig.getTime());
-        sender.sendMessage("  - spawn:");
-        final Coord spawn = worldConfig.getSpawn().orElse(null);
-        if (spawn == null) {
-            sender.sendMessage("    Not Specified");
-        } else {
-            sender.sendMessage("    - x: " + spawn.getX());
-            sender.sendMessage("    - y: " + spawn.getY());
-            sender.sendMessage("    - z: " + spawn.getZ());
-            sender.sendMessage("    - yaw: " + spawn.getYaw());
-            sender.sendMessage("    - pitch: " + spawn.getPitch());
+        sender.sendMessage("  - keep-spawn-in-memory: " + world.getKeepSpawnInMemory());
+        sender.sendMessage("  - time: " + world.getTime());
+        sender.sendMessage("  - gamerules:");
+        for (final String key : world.getGameRules()) {
+            sender.sendMessage("    - " + key + ": " + world.getGameRuleValue(key));
         }
-        sender.sendMessage("  - game-rules:");
-        worldConfig.getGameRules().forEach((key, value) -> {
-            sender.sendMessage("    - " + key + ": " + value);
-        });
+        final WorldConfig worldConfig = worldConfigList.get(worldName).orElse(null);
+        if (worldConfig == null) {
+            sender.sendMessage(ChatColor.RED + "gamemode and spawn are skipped due to this" +
+                    " world is not managed by this plugin.");
+            return;
+        }
+        sender.sendMessage("  - gamemode: " + worldConfig.getGameMode().name());
+        sender.sendMessage("  - spawn:");
+        final Location worldSpawn = world.getSpawnLocation();
+        final Coord spawn = worldConfig.getSpawn().orElse(null);
+        sender.sendMessage("    - x: " + (spawn == null ? worldSpawn.getX() : spawn.getX()));
+        sender.sendMessage("    - y: " + (spawn == null ? worldSpawn.getY() : spawn.getY()));
+        sender.sendMessage("    - z: " + (spawn == null ? worldSpawn.getZ() : spawn.getZ()));
+        sender.sendMessage("    - yaw: " + (spawn == null ? worldSpawn.getYaw() : spawn.getYaw()));
+        sender.sendMessage("    - pitch: " + (spawn == null ? worldSpawn.getPitch() : spawn.getPitch()));
     }
 
     private void saveWorldConfigList(final CommandSender sender) {
@@ -194,23 +198,17 @@ public final class WorldsConfigCommands {
     public void executeConfigGameRule(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
-        final WorldConfig worldConfig = worldConfigList.get(worldName).orElse(null);
-        if (worldConfig == null) {
-            sender.sendMessage(ChatColor.RED + "World: " + worldName + " not found");
-            return;
-        }
         final World world = Bukkit.getWorld(worldName);
         if (world == null) {
             sender.sendMessage(ChatColor.RED + "Please make sure " + worldName + " is loaded!");
             return;
         }
-        if (!world.isGameRule(data.get("gamerule"))) {
-            sender.sendMessage(ChatColor.RED + data.get("gamerule") + " is invalid gamerule!");
+        final String gamerule = data.get("gamerule");
+        if (!world.isGameRule(gamerule)) {
+            sender.sendMessage(ChatColor.RED + gamerule + " is invalid gamerule!");
             return;
         }
-        worldConfig.getGameRules().put(data.get("gamerule"), data.get("value"));
-        worldConfig.apply(world);
-        saveWorldConfigList(sender);
+        world.setGameRuleValue(gamerule, data.get("value"));
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }
 
@@ -236,27 +234,22 @@ public final class WorldsConfigCommands {
     }
 
     @Executor(
-        command = "world config time <world:managedworlds> <time>",
+        command = "world config time <world:worlds> <time>",
         description = "Set time of specified world"
     )
     public void executeConfigTime(final ExecutionData data) {
         final CommandSender sender = data.getSender();
         final String worldName = data.get("world");
-        final WorldConfig worldConfig = worldConfigList.get(worldName).orElse(null);
-        if (worldConfig == null) {
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) {
             sender.sendMessage(ChatColor.RED + "World: " + worldName + " not found");
             return;
         }
         try {
-            worldConfig.setTime(Integer.parseInt(data.get("time")));
+            world.setTime(Integer.parseInt(data.get("time")));
         } catch (NumberFormatException e) {
             sender.sendMessage(ChatColor.RED + e.getMessage());
             return;
-        }
-        saveWorldConfigList(sender);
-        final World world = Bukkit.getWorld(worldName);
-        if (world != null) {
-            worldConfig.apply(world);
         }
         sender.sendMessage(ChatColor.GREEN + "Updated!");
     }

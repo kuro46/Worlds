@@ -13,7 +13,7 @@ public final class Config {
 
     private final Path filePath;
     private boolean updateGameModeForAdmin;
-    private WorldConfig defaultWorldConfig;
+    private DefaultWorldConfig defaultWorldConfig;
     private WorldCreationConfig defaultWorldCreationConfig;
 
     public Config(final Path filePath) throws ConfigException, IOException {
@@ -36,7 +36,7 @@ public final class Config {
         if (!conf.contains("default-world-config")) {
             throw new ConfigKeyNotPresentException("default-world-config");
         }
-        this.defaultWorldConfig = WorldConfig.load(conf.getConfigurationSection("default-world-config"));
+        this.defaultWorldConfig = DefaultWorldConfig.load(conf.getConfigurationSection("default-world-config"));
         if (!conf.contains("default-creation-config")) {
             throw new ConfigKeyNotPresentException("default-creation-config");
         }
@@ -67,7 +67,7 @@ public final class Config {
         return updateGameModeForAdmin;
     }
 
-    public WorldConfig getDefaultWorldConfig() {
+    public DefaultWorldConfig getDefaultWorldConfig() {
         return defaultWorldConfig;
     }
 

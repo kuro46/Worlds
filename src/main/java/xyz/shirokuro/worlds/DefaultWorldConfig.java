@@ -14,35 +14,35 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public final class WorldConfig {
+public final class DefaultWorldConfig {
 
+    private final ConcurrentMap<String, String> gameRules = new ConcurrentHashMap<>();
     private boolean keepSpawnInMemory;
     private GameMode gameMode;
-    private Coord spawnCoord;
+    private int time;
 
-    private WorldConfig(
+    private DefaultWorldConfig(
         final boolean keepSpawnInMemory,
         @NonNull final GameMode gameMode,
-        final Coord spawnCoord) {
+        final int time,
+        @NonNull final Map<String, String> gameRules) {
         this.keepSpawnInMemory = keepSpawnInMemory;
-        this.spawnCoord = spawnCoord;
         this.gameMode = gameMode;
+        this.time = time;
+        this.gameRules.putAll(gameRules);
     }
 
-    public static WorldConfig copy(final WorldConfig source) {
-        return new WorldConfig(source.keepSpawnInMemory, source.gameMode, source.spawnCoord);
+    public static DefaultWorldConfig copy(final DefaultWorldConfig source) {
+        return new DefaultWorldConfig(source.keepSpawnInMemory, source.gameMode, source.time, source.gameRules);
     }
 
-    public static WorldConfig fromDefault(final DefaultWorldConfig def) {
-        return new WorldConfig(def.keepSpawnInMemory(), def.getGameMode(), null);
-    }
-
-    public static WorldConfig load(@NonNull final ConfigurationSection section)
+    public static DefaultWorldConfig load(@NonNull final ConfigurationSection section)
         throws ConfigException {
 
-        final Coord spawnCoord = section.contains("spawn")
-            ? Coord.fromConfigSection(section.getConfigurationSection("spawn"))
-            : null;
+        if (!section.contains("time")) {
+            throw new ConfigKeyNotPresentException("time");
+        }
+        final int time = section.getInt("time");
         if (!section.contains("game-mode")) {
             throw new ConfigKeyNotPresentException("game-mode");
         }
@@ -57,15 +57,24 @@ public final class WorldConfig {
             throw new ConfigKeyNotPresentException("keep-spawn-in-memory");
         }
         final boolean keepSpawnInMemory = section.getBoolean("keep-spawn-in-memory");
-        return new WorldConfig(keepSpawnInMemory, gameMode, spawnCoord);
+        final Map<String, String> gameRules = new HashMap<>();
+        final ConfigurationSection gameRulesSection = section.getConfigurationSection("game-rules");
+        if (gameRulesSection != null) {
+            for (String key : gameRulesSection.getKeys(false)) {
+                gameRules.put(key, gameRulesSection.getString(key));
+            }
+        }
+        return new DefaultWorldConfig(keepSpawnInMemory, gameMode, time, gameRules);
     }
 
     public void fillConfigurationSection(final ConfigurationSection section) {
         section.set("game-mode", gameMode.name());
         section.set("keep-spawn-in-memory", keepSpawnInMemory);
-        if (spawnCoord != null) {
-            spawnCoord.fillConfigSection(section.createSection("spawn"));
-        }
+        section.set("time", time);
+        final ConfigurationSection gameRulesSection = section.createSection("game-rules");
+        gameRules.forEach((key, value) -> {
+            gameRulesSection.set(key, value);
+        });
     }
 
     public boolean keepSpawnInMemory() {
@@ -77,17 +86,12 @@ public final class WorldConfig {
     }
 
     /**
-     * Returns spawn coordinate of this config.
-     * If spawn is not specified, it will returns empty Optional.
+     * Returns gamerules.
      *
-     * @return {@code Coord} or empty
+     * @return Map (Mutable)
      */
-    public Optional<Coord> getSpawn() {
-        return Optional.ofNullable(spawnCoord);
-    }
-
-    public void setSpawn(final Coord spawn) {
-        this.spawnCoord = spawn;
+    public Map<String, String> getGameRules() {
+        return gameRules;
     }
 
     public void setKeepSpawnInMemory(boolean keepSpawnInMemory) {
@@ -104,11 +108,28 @@ public final class WorldConfig {
         }
     }
 
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(final int time) {
+        this.time = time;
+    }
+
     /**
      * Apply this configuration to specified world.
      */
     public void apply(final World world) {
         Objects.requireNonNull(world, "world");
         world.setKeepSpawnInMemory(keepSpawnInMemory);
+        if (time != -1) {
+            world.setTime(time);
+        }
+        gameRules.forEach((key, value) -> {
+            if (!world.isGameRule(key)) {
+                throw new IllegalArgumentException("Gamerule: " + key + " is invalid gamerule!");
+            }
+            world.setGameRuleValue(key, value);
+        });
     }
 }
